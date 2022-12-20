@@ -416,14 +416,18 @@ window.addEventListener('DOMContentLoaded', () => {
   // });
 
   //================================ Array methods 
-  const getsElem = {
-    ivan: 'person',
-    anna: 'person',
-    cat: 'animal',
-    dog: 'animal'
-  };
-  const newArr = Object.entries(getsElem).filter(item => item[1] === 'person').map(item => item[0]);
-  console.log(newArr);
+  // const getsElem = {
+  //     ivan: 'person',
+  //     anna: 'person',
+  //     cat: 'animal',
+  //     dog: 'animal'
+  // };
+
+  // const newArr = Object.entries(getsElem)
+  //     .filter(item => item[1] === 'person')
+  //     .map(item => item[0]);
+
+  // console.log(newArr);
 
   // just test 
 
@@ -440,25 +444,23 @@ window.addEventListener('DOMContentLoaded', () => {
     name: 'Some bad film',
     rating: 4
   }];
-  function setFilmsIds(arr) {
-    return arr.map((item, i) => {
-      item.id = i;
-      return item;
-    });
-  }
-  const tranformedArray = setFilmsIds(films);
-  function checkFilms(arr) {
-    return arr.every(item => 'id' in item);
-  }
   function showGoodFilms(arr) {
-    return arr.filter(item => {
-      return item.rating >= 8;
-    });
+    return arr.filter(film => film.rating >= 8);
   }
   function showListOfFilms(arr) {
-    return arr.map(item => item.name).join(', ');
+    return arr.map(film => film.name).join(', ');
   }
-  //// test 2 
+  function setFilmsIds(arr) {
+    return arr.map((film, id) => {
+      film.id = id;
+      return film;
+    });
+  }
+  function checkFilms(arr) {
+    return arr.every(film => 'id' in film);
+  }
+  console.log(setFilmsIds(films));
+  // //// test 2 
 
   const funds = [{
     amount: -1400
@@ -469,22 +471,20 @@ window.addEventListener('DOMContentLoaded', () => {
   }, {
     amount: 500
   }, {
-    amount: 10400
+    amount: -10400
   }, {
-    amount: -11400
+    amount: 11400
   }];
-  const getPositiveIncomeAmount = data => {
-    const result = data.filter(item => item.amount >= 0);
-    return result.reduce((sum, current) => sum + current.amount, 0);
-  }; // готово
-
-  const getTotalIncomeAmount = data => {
-    if (data.some(el => el.amount <= 0)) {
-      return data.reduce((sum, current) => sum + current.amount, 0);
+  function getPositiveIncomeAmount(arr) {
+    return arr.filter(fund => fund.amount >= 0).reduce((sum, current) => sum + current.amount, 0);
+  }
+  function getTotalIncomeAmount(arr) {
+    if (arr.some(item => item.amount <= 0)) {
+      return arr.reduce((acc, current) => acc + current.amount, 0);
     } else {
-      getPositiveIncomeAmount(funds);
+      return getPositiveIncomeAmount(funds);
     }
-  };
+  }
   console.log(getTotalIncomeAmount(funds));
 });
 
