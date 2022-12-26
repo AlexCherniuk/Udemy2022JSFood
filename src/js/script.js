@@ -39,7 +39,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
     // Timer 
 
-    const deadline = '2022-12-24';
+    const deadline = '2022-12-28';
 
     function getTimeRemaining(endtime) {
         const t = Date.parse(endtime) - Date.parse(new Date());
@@ -167,9 +167,9 @@ window.addEventListener('DOMContentLoaded', () => {
     // console.log(square1.createSquare());
 
     class MenuItem {
-        constructor(img, alt, title, descr, price, parentSelector, transfer, ...classes) {
+        constructor(img, altimg, title, descr, price, parentSelector, transfer, classes) {
             this.img = img;
-            this.alt = alt;
+            this.altimg = altimg;
             this.title = title;
             this.descr = descr;
             this.price = price;
@@ -196,38 +196,55 @@ window.addEventListener('DOMContentLoaded', () => {
             this.parent.append(elem); // загружаеьмо наш elem в HTML , а саме в тег parent;
         }
     }
-    new MenuItem(
-        "img/tabs/vegy.jpg",
-        "vegy",
-        'Меню "Фитнес"',
-        'Меню "Фитнес" - это новый подход к приготовлению блюд: больше свежих овощей и фруктов. Продукт активных и здоровых людей. Это абсолютно новый продукт с оптимальной ценой и высоким качеством!',
-        9,
-        '.menu .container',
-        37,
-        'menu__item', 'first'
-    ).render();
 
-    new MenuItem(
-        "img/tabs/elite.jpg",
-        "elite",
-        'Меню “Премиум”',
-        'В меню “Премиум” мы используем не только красивый дизайн упаковки, но и качественное исполнение блюд. Красная рыба, морепродукты, фрукты - ресторанное меню без похода в ресторан!',
-        12,
-        '.menu .container',
-        37,
-        'menu__item'
-    ).render();
+    const getResource = async (url) => { // universal function for GET method and use this data
+        const res = await fetch(url);
+        if (!res.ok) {
+           throw new Error(`Помилка в ${url}  статус: ${res.status}`);  // create manual error  
+        }
 
-    new MenuItem(
-        "img/tabs/post.jpg",
-        "post",
-        'Меню "Постное"',
-        'Меню “Постное” - это тщательный подбор ингредиентов: полное отсутствие продуктов животного происхождения, молоко из миндаля, овса, кокоса или гречки, правильное количество белков за счет тофу и импортных вегетарианских стейков.',
-        7,
-        '.menu .container',
-        37,
-        'menu__item'
-    ).render();
+        return await res.json();
+    };
+
+    getResource('http://localhost:3000/menu')  // universal Promise for rendering element
+        .then(data => {
+            data.forEach(({img, altimg, title, descr, price, parentSelector, transfer, classes}) => {
+                new MenuItem(img, altimg, title, descr, price, parentSelector, transfer, classes).render();
+            });
+        }); 
+
+    // new MenuItem(
+    //     "img/tabs/vegy.jpg",
+    //     "vegy",
+    //     'Меню "Фитнес"',
+    //     'Меню "Фитнес" - это новый подход к приготовлению блюд: больше свежих овощей и фруктов. Продукт активных и здоровых людей. Это абсолютно новый продукт с оптимальной ценой и высоким качеством!',
+    //     9,
+    //     '.menu .container',
+    //     37,
+    //     'menu__item'
+    // ).render();
+
+    // new MenuItem(
+    //     "img/tabs/elite.jpg",
+    //     "elite",
+    //     'Меню “Премиум”',
+    //     'В меню “Премиум” мы используем не только красивый дизайн упаковки, но и качественное исполнение блюд. Красная рыба, морепродукты, фрукты - ресторанное меню без похода в ресторан!',
+    //     12,
+    //     '.menu .container',
+    //     37,
+    //     'menu__item'
+    // ).render();
+
+    // new MenuItem(
+    //     "img/tabs/post.jpg",
+    //     "post",
+    //     'Меню "Постное"',
+    //     'Меню “Постное” - это тщательный подбор ингредиентов: полное отсутствие продуктов животного происхождения, молоко из миндаля, овса, кокоса или гречки, правильное количество белков за счет тофу и импортных вегетарианских стейков.',
+    //     7,
+    //     '.menu .container',
+    //     37,
+    //     'menu__item'
+    // ).render();
 
 
     // AJAX=============================
@@ -278,34 +295,38 @@ window.addEventListener('DOMContentLoaded', () => {
         failure: 'Error!'
     };
 
-    forms.forEach(item => postData(item));
+    
+  
+    
+    forms.forEach(item => bindPostData(item));
+    
+    const postData = async (url, data) => {    // universal  POST method function 
+        const res = await fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-type': 'application/json'
+            },
+            body: data
+        });
+        return await res.json();
+    };
 
-
-    function postData(form) {
+    function bindPostData(form) {                                    
         form.addEventListener('submit', (event) => {
             event.preventDefault();
-
+            
             let statusMessage = document.createElement('div');
             statusMessage.classList.add('status');
             statusMessage.textContent = message.loading;
             form.append(statusMessage);
-
-
+            
+            
             const formData = new FormData(form);
 
-            const object = {};
-            formData.forEach(function (value, key) {
-                object[key] = value;
-            });
+            const json = JSON.stringify(Object.fromEntries(formData.entries())); //universal converter formData to json
 
-            fetch('server.php', {
-                method: 'POST',
-                headers: {
-                    'Content-type': 'application/json'
-                },
-                body: JSON.stringify(object)
-            })
-                .then(data => data.text())
+
+            postData('http://localhost:3000/requests', json)
                 .then(data => {
                     console.log(data);
                     showThanksModal(message.success);
@@ -400,72 +421,10 @@ window.addEventListener('DOMContentLoaded', () => {
     //     .map(item => item[0]);
 
     // console.log(newArr);
-
+    // fetch('http://localhost:3000/menu')
+    //     .then(data => data.json())
+    //     .then(result => console.log(result));
 
     // just test 
-
-    const films = [
-        {
-            name: 'Titanic',
-            rating: 9
-        },
-        {
-            name: 'Die hard 5',
-            rating: 5
-        },
-        {
-            name: 'Matrix',
-            rating: 8
-        },
-        {
-            name: 'Some bad film',
-            rating: 4
-        }
-    ];
-
-    function showGoodFilms(arr) {
-        return arr.filter(film => film.rating >= 8);
-    }
-
-    function showListOfFilms(arr) {
-        return arr.map(film => film.name).join(', ');
-    }
-
-    function setFilmsIds(arr) {
-        return arr.map((film, id)=> {
-            film.id = id;
-            return film;
-        });
-    }
-
-function checkFilms(arr) {
-    return arr.every(film => 'id' in film);
-}
-
-console.log(setFilmsIds(films));
-    // //// test 2 
-
-    const funds = [
-        { amount: -1400 },
-        { amount: 2400 },
-        { amount: -1000 },
-        { amount: 500 },
-        { amount: -10400 },
-        { amount: 11400 }
-    ];
-
-    function getPositiveIncomeAmount(arr) {
-        return arr.filter(fund => fund.amount >= 0).reduce((sum, current) => sum + current.amount, 0);
-    }
-    
-    function getTotalIncomeAmount(arr) {
-        if (arr.some(item => item.amount <= 0)) {
-            return arr.reduce((acc, current)=> acc + current.amount, 0);
-        } else {
-            return getPositiveIncomeAmount(funds);
-        }
-    }
-    
-    console.log(getTotalIncomeAmount(funds));
 
 });
