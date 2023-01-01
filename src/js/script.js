@@ -200,19 +200,26 @@ window.addEventListener('DOMContentLoaded', () => {
     const getResource = async (url) => { // universal function for GET method and use this data
         const res = await fetch(url);
         if (!res.ok) {
-           throw new Error(`Помилка в ${url}  статус: ${res.status}`);  // create manual error  
+            throw new Error(`Помилка в ${url}  статус: ${res.status}`);  // create manual error  
         }
 
         return await res.json();
     };
 
-    getResource('http://localhost:3000/menu')  // universal Promise for rendering element
-        .then(data => {
-            data.forEach(({img, altimg, title, descr, price, parentSelector, transfer, classes}) => {
+    // getResource('http://localhost:3000/menu')  // universal Promise for rendering element
+    //     .then(data => {
+    //         data.forEach(({img, altimg, title, descr, price, parentSelector, transfer, classes}) => {
+    //             new MenuItem(img, altimg, title, descr, price, parentSelector, transfer, classes).render();
+    //         });
+    //     }); 
+    //////////  axios library(server)
+    const axios = require('axios');
+    axios.get('http://localhost:3000/menu')
+        .then(response => {
+            response.data.forEach(({ img, altimg, title, descr, price, parentSelector, transfer, classes }) => {
                 new MenuItem(img, altimg, title, descr, price, parentSelector, transfer, classes).render();
             });
-        }); 
-
+        });
     // new MenuItem(
     //     "img/tabs/vegy.jpg",
     //     "vegy",
@@ -295,11 +302,11 @@ window.addEventListener('DOMContentLoaded', () => {
         failure: 'Error!'
     };
 
-    
-  
-    
+
+
+
     forms.forEach(item => bindPostData(item));
-    
+
     const postData = async (url, data) => {    // universal  POST method function 
         const res = await fetch(url, {
             method: 'POST',
@@ -311,16 +318,16 @@ window.addEventListener('DOMContentLoaded', () => {
         return await res.json();
     };
 
-    function bindPostData(form) {                                    
+    function bindPostData(form) {
         form.addEventListener('submit', (event) => {
             event.preventDefault();
-            
+
             let statusMessage = document.createElement('div');
             statusMessage.classList.add('status');
             statusMessage.textContent = message.loading;
             form.append(statusMessage);
-            
-            
+
+
             const formData = new FormData(form);
 
             const json = JSON.stringify(Object.fromEntries(formData.entries())); //universal converter formData to json
@@ -426,5 +433,111 @@ window.addEventListener('DOMContentLoaded', () => {
     //     .then(result => console.log(result));
 
     // just test 
+
+
+    //////////////////////////////////////////////////////////////// Slider /////
+
+    const slides = document.querySelectorAll('.offer__slide');
+    const next = document.querySelector('.offer__slider-next');
+    const prev = document.querySelector('.offer__slider-prev');
+    const totalSlides = document.querySelector('#total');
+    const currentSlides = document.querySelector('#current');
+    let slideIndex = 1;
+    let offset = 0;
+
+    if (slides.length < 10) {
+        totalSlides.textContent = `0${slides.length}`;
+        currentSlides.textContent = `0${slideIndex}`;
+    } else {
+        totalSlides.textContent = slides.length;
+        currentSlides.textContent = slideIndex;
+    }
+
+    const slidesWrapper = document.querySelector('.offer__slider-wrapper');
+    const slidesField = document.querySelector('.offer__slider-inner');
+
+    const width = window.getComputedStyle(slidesWrapper).width;
+    
+    slidesField.style.width = 100 * slides.length + '%';
+    slides.forEach(slide => slide.style.width = width);
+    slidesField.style.display = 'flex';
+    slidesField.style.transition = '0.5s all';
+    slidesWrapper.style.overflow = 'hidden';
+    const widthToNum =  +width.slice(0, width.length - 2); // 
+
+
+    next.addEventListener('click', () => {
+        if (offset == widthToNum * (slides.length - 1)) { // width to string and delete 2 last symbols
+            offset = 0;
+        } else {
+            offset += widthToNum;
+        }
+        slidesField.style.transform = `translateX(-${offset}px)`;
+
+        if (slideIndex == slides.length) {
+            slideIndex = 1;
+        } else {
+            slideIndex++;
+        }
+
+        if (slideIndex < 10) {
+            currentSlides.textContent = `0${slideIndex}`;
+        } else {
+            currentSlides.textContent = slideIndex;
+        }
+    });
+
+    prev.addEventListener('click', () => {
+        if(offset == 0) {
+            offset = widthToNum * (slides.length - 1);
+        } else {
+            offset -= widthToNum;
+        }
+        slidesField.style.transform = `translateX(-${offset}px)`;
+
+        if (slideIndex == 1) {
+            slideIndex = slides.length;
+        } else {
+            slideIndex--;
+        }
+
+        if (slideIndex < 10) {
+            currentSlides.textContent = `0${slideIndex}`;
+        } else {
+            currentSlides.textContent = slideIndex;
+        }
+    });
+
+
+    ///////version 2 
+    // showSlides(slideIndex);
+    // if (slides.length < 10) {
+    //     currentSlides.textContent = `0${slideIndex}`;
+    //     totalSlides.textContent = `0${slides.length}`;
+
+    // }
+
+    // function showSlides(n) {
+    //     if(n > slides.length) {
+    //         slideIndex = 1;
+    //     }
+
+    //     if(n < 1) {
+    //         slideIndex = slides.length;
+    //     }
+    //     slides.forEach(slide => slide.style.display = 'none');
+    //     slides[slideIndex - 1].style.display = 'block';
+    //       .textContent = `0${slideIndex}`;
+    // }
+    // next.addEventListener('click', ()=>{
+    //     ++slideIndex;
+    //     showSlides(slideIndex);
+    // });
+    // prev.addEventListener('click', ()=>{
+    //     --slideIndex;
+    //     showSlides(slideIndex);
+    // });
+
+
 
 });
