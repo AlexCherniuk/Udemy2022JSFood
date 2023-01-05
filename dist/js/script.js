@@ -2883,7 +2883,6 @@ window.addEventListener('DOMContentLoaded', () => {
       dots[slideIndex - 1].style.opacity = 1;
     });
   });
-  localStorage.setItem('key', 'value');
 
   ///////version 2 
   // showSlides(slideIndex);
@@ -2913,6 +2912,183 @@ window.addEventListener('DOMContentLoaded', () => {
   //     --slideIndex;
   //     showSlides(slideIndex);
   // });
+
+  //////////////                             Calculator
+
+  // const result = document.querySelector('.calculating__result span');
+  // let sex = 'female', height, weight, age, ratio = 1.375;
+  // //Функція - формула розрахунку. 
+  // function calcTotal() {
+  //     if (!sex || !height || !weight || !age || !ratio) {
+  //         result.textContent = '___ ';
+  //         return;
+  //     }
+
+  //     if (sex === 'female') {
+  //         result.textContent = Math.round((447.6 + (9.2 * weight) + (3.1 * height) - (4.3 * age)) * ratio);
+  //     } else {
+  //         result.textContent = Math.round((88.36 + (13.4 * weight) + (4.8 * height) - (5.7 * age)) * ratio);
+  //     }
+  // }
+  // calcTotal();
+
+  // // get data from static content (sex , ratio)
+
+  // function getStaticInformation(parentSelector, activeClass) {
+  //     const elements = document.querySelectorAll(`${parentSelector} div`);
+
+  //     elements.forEach(el => {
+  //         el.addEventListener('click', (e) => {
+  //             if (e.target.getAttribute('data-ratio')) {
+  //                 ratio = e.target.getAttribute('data-ratio');
+  //             } else {
+  //                 sex = e.target.getAttribute('id');
+  //             }
+  //             elements.forEach(el => {
+  //                 el.classList.remove(activeClass);
+  //             });
+  //             e.target.classList.add(activeClass);
+  //             calcTotal();
+
+  //         });
+  //     });
+  // }
+
+  // getStaticInformation('#gender', 'calculating__choose-item_active');
+  // getStaticInformation('.calculating__choose_big', 'calculating__choose-item_active');
+
+  // //function for dynamic data (input)
+  // function getDynamicInformation(selector) {
+  //     const input = document.querySelector(selector);
+
+  //     input.addEventListener('input', () => {
+  //         switch (input.getAttribute('id')) {
+  //             case 'height':
+  //                 height = +input.value;
+  //                 break;
+  //             case 'weight':
+  //                 weight = +input.value;
+  //                 break;
+  //             case 'age':
+  //                 age = +input.value;
+  //                 break;
+  //         }
+
+  //         calcTotal();
+
+  //     });
+  // }
+
+  // getDynamicInformation('#height');
+  // getDynamicInformation('#weight');
+  // getDynamicInformation('#age');
+
+  const result = document.querySelector('.calculating__result span');
+  let sex, height, weight, age, ratio;
+  if (localStorage.getItem('sex')) {
+    sex = localStorage.getItem('sex');
+  } else {
+    sex = 'female';
+    localStorage.setItem('sex', 'female');
+  }
+  if (localStorage.getItem('ratio')) {
+    ratio = localStorage.getItem('ratio');
+  } else {
+    ratio = 1.375;
+    localStorage.setItem('ratio', 1.375);
+  }
+
+  //sync active class with LocalStorage
+  function initLocalSettings(selector, activeClass) {
+    const elements = document.querySelectorAll(selector);
+    elements.forEach(el => {
+      el.classList.remove(activeClass);
+      if (el.getAttribute('id') === localStorage.getItem('sex')) {
+        el.classList.add(activeClass);
+      }
+      if (el.getAttribute('data-ratio') === localStorage.getItem('ratio')) {
+        el.classList.add(activeClass);
+      }
+    });
+  }
+  initLocalSettings('#gender div', 'calculating__choose-item_active');
+  initLocalSettings('.calculating__choose_big div', 'calculating__choose-item_active');
+  function calcTotal() {
+    if (!height || !weight || !age) {
+      result.textContent = '___ ';
+      return;
+    }
+    if (sex === 'female') {
+      result.textContent = Math.round((447.6 + 9.2 * weight + 3.1 * height - 4.3 * age) * ratio);
+    } else {
+      result.textContent = Math.round((88.36 + 13.4 * weight + 4.8 * height - 5.7 * age) * ratio);
+    }
+  }
+  calcTotal();
+  function getStaticInformation(selector, activeClass) {
+    const elements = document.querySelectorAll(selector);
+    elements.forEach(elem => {
+      elem.addEventListener('click', e => {
+        if (elem.getAttribute('data-ratio')) {
+          ratio = +e.target.getAttribute('data-ratio');
+          localStorage.setItem('ratio', e.target.getAttribute('data-ratio'));
+        } else {
+          sex = e.target.getAttribute('id');
+          localStorage.setItem('sex', e.target.getAttribute('id'));
+        }
+        elements.forEach(el => {
+          el.classList.remove(activeClass);
+        });
+        e.target.classList.add(activeClass);
+        calcTotal();
+      });
+    });
+  }
+  getStaticInformation('#gender div', 'calculating__choose-item_active');
+  getStaticInformation('.calculating__choose_big div', 'calculating__choose-item_active');
+  function getDynamicInformation(selector) {
+    const input = document.querySelector(selector);
+    input.addEventListener('input', () => {
+      if (input.value.match(/\D/g)) {
+        input.style.border = '2px solid red';
+      } else {
+        input.style.border = 'none';
+      }
+      switch (input.getAttribute('id')) {
+        case 'height':
+          height = +input.value;
+          break;
+        case 'weight':
+          weight = +input.value;
+          break;
+        case 'age':
+          age = +input.value;
+          break;
+      }
+      calcTotal();
+    });
+  }
+  getDynamicInformation("#height");
+  getDynamicInformation("#weight");
+  getDynamicInformation("#age");
+
+  ///test
+  //test encapsulation
+  class UserA {
+    constructor(name, age) {
+      this._name = name;
+      this._age = age;
+    }
+    get age() {
+      return this._age;
+    }
+    set age(age) {
+      this._age = age;
+    }
+  }
+  const alexandr = new UserA('Alex', 32);
+  console.log(alexandr.age);
+  console.log(alexandr.name); //not working
 });
 
 /***/ })
