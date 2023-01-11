@@ -1,20 +1,30 @@
-window.addEventListener('DOMContentLoaded', () => {
-    const tabs = require('./modules/tabs'),
-        modal = require('./modules/modal'),
-        timer = require('./modules/timer'),
-        cards = require('./modules/cards'),
-        calc = require('./modules/calc'),
-        forms = require('./modules/forms'),
-        slider = require('./modules/slider'),
-        converter = require('./modules/converter');
+import tabs from './modules/tabs';
+import modal from './modules/modal';
+import timer from './modules/timer';
+import cards from './modules/cards';
+import calc from './modules/calc';
+import forms from './modules/forms';
+import slider from './modules/slider';
+import converter from './modules/converter';
 
-    tabs();
-    modal();
-    timer();
+window.addEventListener('DOMContentLoaded', () => {
+
+    tabs('.tabheader__item', '.tabcontent', '.tabheader__items', 'tabheader__item_active');
+    modal('[data-modal]', '.modal');
+    timer('.timer', '2023-01-17:12:00');
     cards();
     calc();
-    forms();
-    slider();
+    forms('form');
+    slider({
+        container: '.offer__slider',
+        slide: '.offer__slide',
+        nextArrow: '.offer__slider-next',
+        prewArrow: '.offer__slider-prev',
+        totalCounter: '#total', 
+        currentCounter: '#current',
+        wrapper: '.offer__slider-wrapper',
+        field: '.offer__slider-inner'
+    });
     converter();
     // Class =================================================================
 
@@ -140,24 +150,6 @@ window.addEventListener('DOMContentLoaded', () => {
 
 
     ///test
-    //test encapsulation
-    class UserA {
-        constructor(name, age) {
-            this._name = name;
-            this._age = age;
-        }
 
-        get age() {
-            return this._age;
-        }
-
-        set age(age) {
-            this._age = age;
-        }
-    }
-
-    const alexandr = new UserA('Alex', 32);
-    console.log(alexandr.age);
-    console.log(alexandr.name); //not working
 
 });

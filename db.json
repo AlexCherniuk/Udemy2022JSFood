@@ -6,9 +6,11 @@
       "title": "Меню 'Фитнес'",
       "descr": "Меню 'Фитнес' - это новый подход к приготовлению блюд: больше свежих овощей и фруктов. Продукт активных и здоровых людей. Это абсолютно новый продукт с оптимальной ценой и высоким качеством!",
       "price": 9,
-      "parentSelector":".menu .container",
+      "parentSelector": ".menu .container",
       "transfer": 37,
-      "classes": ["menu__item"]
+      "classes": [
+        "menu__item"
+      ]
     },
     {
       "img": "img/tabs/post.jpg",
@@ -16,10 +18,11 @@
       "title": "Меню 'Постное'",
       "descr": "Меню 'Постное' - это тщательный подбор ингредиентов: полное отсутствие продуктов животного происхождения, молоко из миндаля, овса, кокоса или гречки, правильное количество белков за счет тофу и импортных вегетарианских стейков.",
       "price": 14,
-      "parentSelector":".menu .container",
+      "parentSelector": ".menu .container",
       "transfer": 37,
-      "classes": ["menu__item"]
-      
+      "classes": [
+        "menu__item"
+      ]
     },
     {
       "img": "img/tabs/elite.jpg",
@@ -27,9 +30,11 @@
       "title": "Меню 'Премиум'",
       "descr": "В меню 'Премиум' мы используем не только красивый дизайн упаковки, но и качественное исполнение блюд. Красная рыба, морепродукты, фрукты - ресторанное меню без похода в ресторан!",
       "price": 21,
-      "parentSelector":".menu .container",
+      "parentSelector": ".menu .container",
       "transfer": 37,
-      "classes": ["menu__item"]
+      "classes": [
+        "menu__item"
+      ]
     }
   ],
   "requests": [
@@ -42,6 +47,41 @@
       "name": "Oleksandr Cherniuk",
       "phone": "+380967917950",
       "id": 2
+    },
+    {
+      "name": "Oleksandr Cherniuk",
+      "phone": "+380 (76) 973-8413",
+      "id": 3
+    },
+    {
+      "name": "Oleksandr Cherniuk",
+      "phone": "+380 (76) 973-8413",
+      "id": 4
+    },
+    {
+      "name": "asdfa",
+      "phone": "asdfasd",
+      "id": 5
+    },
+    {
+      "name": "asfasdf",
+      "phone": "asdfasd",
+      "id": 6
+    },
+    {
+      "name": "Oleksandr Cherniuk",
+      "phone": "+380 (76) 973-8413",
+      "id": 7
+    },
+    {
+      "name": "Oleksandr Cherniuk",
+      "phone": "+380 (76) 973-8413",
+      "id": 8
+    },
+    {
+      "name": "Oleksandr Cherniuk",
+      "phone": "+380 (76) 973-8413",
+      "id": 9
     }
   ]
 }
