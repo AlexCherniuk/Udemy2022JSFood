@@ -1,3 +1,5 @@
+import { getResource } from "../services/services";
+
 function cards () {
     class MenuItem {
         constructor(img, altimg, title, descr, price, parentSelector, transfer, classes) {
@@ -30,14 +32,7 @@ function cards () {
         }
     }
 
-    const getResource = async (url) => { // universal function for GET method and use this data
-        const res = await fetch(url);
-        if (!res.ok) {
-            throw new Error(`Помилка в ${url}  статус: ${res.status}`);  // create manual error  
-        }
 
-        return await res.json();
-    };
 
     getResource('http://localhost:3000/menu')  // universal Promise for rendering element
         .then(data => {
@@ -46,4 +41,4 @@ function cards () {
             });
         }); 
 }
-module.exports = cards;
+export default cards;
